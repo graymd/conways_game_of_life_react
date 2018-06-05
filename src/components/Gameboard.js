@@ -1,27 +1,36 @@
 import React, { Component } from 'react';
 // import BoardPiece from './BoardPiece';
 import GameRow from './GameRow';
+import Button from './Button';
 
 class Gameboard extends Component {
-  state = {
-    boardHeight: 10,
-    boardWidth: 10,
-    currentCells: [],
-    previousCells: []
+
+    state = {
+      boardHeight: 10,
+      boardWidth: 10,
+      currentCells: [],
+      previousCells: [],
+      startGameButton: true
   }
 
-  initializeBoard() {
+
+
+
+  initializeBoard(state) {
     var boardHeightArray = [...Array(this.state.boardHeight)];
     //Array(this.state.boardHeight).fill().map((x,i) => i);
     var boardWidthArray = [...Array(this.state.boardWidth)];
     //Array(this.state.boardWidth).fill().map((x, i) => i);
+    var tempOuterArray = [];
     boardHeightArray.forEach(h => {
-      var tempArr = []
+
+      var tempRowArr = []
       boardWidthArray.forEach(w => {
-        tempArr.push(this.getRandomBoolean());
+        tempRowArr.push(this.getRandomBoolean());
       });
-      this.state.currentCells.push(tempArr);
+      tempOuterArray.push(tempRowArr);
     })
+    this.setState({currentCells: tempOuterArray});
   }
 
   componentWillMount() {
@@ -32,11 +41,25 @@ class Gameboard extends Component {
     return Math.floor(Math.random() * Math.floor(2));
   }
 
+  startGame() {
+    this.setState({startGameButton: false});
+    console.log('starting game');
+  }
+
   render() {
     var currentCells = this.state.currentCells;
 
     return  (
       <div className="container">
+        <div className="columns">
+          <div className="column">
+            <Button
+              text={'Start Game'}
+              onClick={this.startGame.bind(this)}
+              enabled={this.startGameButton}
+            />
+          </div>
+        </div>
         { currentCells.map(row => <GameRow row={row} />) }
       </div>
     )
@@ -44,8 +67,3 @@ class Gameboard extends Component {
 }
 
 export default Gameboard;
-
-// {
-//   return row.map(col => < GameRow / > )
-// })
-// }
