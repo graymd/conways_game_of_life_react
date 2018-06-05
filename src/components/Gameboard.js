@@ -10,17 +10,13 @@ class Gameboard extends Component {
       boardWidth: 10,
       currentCells: [],
       previousCells: [],
-      startGameButton: true
+      startGameButton: true,
+      gameOver: false
   }
-
-
-
 
   initializeBoard(state) {
     var boardHeightArray = [...Array(this.state.boardHeight)];
-    //Array(this.state.boardHeight).fill().map((x,i) => i);
     var boardWidthArray = [...Array(this.state.boardWidth)];
-    //Array(this.state.boardWidth).fill().map((x, i) => i);
     var tempOuterArray = [];
     boardHeightArray.forEach(h => {
 
@@ -43,7 +39,16 @@ class Gameboard extends Component {
 
   startGame() {
     this.setState({startGameButton: false});
-    console.log('starting game');
+    this.interval = setInterval(() => {
+      if (!this.state.gameOver) {
+        this.tickGame();
+      }
+    }, 1000)
+  }
+
+  tickGame() {
+    console.log('tick');
+    //this.setState({gameOver: true});
   }
 
   render() {
