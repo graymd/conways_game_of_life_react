@@ -3,7 +3,7 @@ import React from 'react';
 const BoardPiece = () => {
   return (
     <div className = "column">
-      Test2
+      hi
     </div>
   )
 }
