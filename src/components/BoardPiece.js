@@ -1,9 +1,15 @@
 import React from 'react';
 
-const BoardPiece = () => {
+const BoardPiece = ({col}) => {
+
+  var theClasses = ["column"];
+  if (col === 1) {
+    theClasses.push('has-background-black');
+  }
+
   return (
-    <div className = "column">
-      hi
+    <div className={theClasses.join(' ')}>
+      {col}
     </div>
   )
 }

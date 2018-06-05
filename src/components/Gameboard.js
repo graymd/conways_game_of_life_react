@@ -4,8 +4,8 @@ import GameRow from './GameRow';
 
 class Gameboard extends Component {
   state = {
-    boardHeight: 5,
-    boardWidth: 5,
+    boardHeight: 10,
+    boardWidth: 10,
     currentCells: [],
     previousCells: []
   }
