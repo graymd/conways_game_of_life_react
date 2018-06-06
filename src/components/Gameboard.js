@@ -47,8 +47,120 @@ class Gameboard extends Component {
   }
 
   tickGame() {
-    console.log('tick');
-    //this.setState({gameOver: true});
+    var updatedCells = this.checkCells();
+    console.log(updatedCells);
+    this.setState({ currentCells: updatedCells })
+  }
+
+  checkCells() {
+    this.setPreviousCellsToCurrentCells();
+    var currentCells = this.state.currentCells;
+    var updatedCells = [];
+    return currentCells.map((row, rowIndex) => {
+      return row.map((cell, cellIndex) => this.checkCell(rowIndex, cellIndex, currentCells));
+    })
+  }
+
+  checkCell(rowIndex, columnIndex, currentCells) {
+
+    var cellAndNeighborInfo = {
+      currentCellState: currentCells[rowIndex][columnIndex],
+      aliveNeighbors: 0,
+      deadNeighbors: 0
+    }
+    // check north
+    var northRowIndex = rowIndex - 1;
+    var northColumnIndex = columnIndex;
+
+    if (this.isCheckCellInbounds(northRowIndex, northColumnIndex)) {
+        currentCells[northRowIndex][northColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+    }
+
+    //check north-east
+    var northEastRowIndex = rowIndex - 1;
+    var northEastColumnIndex = columnIndex + 1;
+
+    if (this.isCheckCellInbounds(northEastRowIndex, northEastColumnIndex)) {
+      currentCells[northEastRowIndex][northEastColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+    }
+
+    // check east
+    var eastRowIndex = rowIndex;
+    var eastColumnIndex = columnIndex + 1;
+
+    if (this.isCheckCellInbounds(eastRowIndex, eastColumnIndex)) {
+      currentCells[eastRowIndex][eastColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+        }
+
+    // check south-east
+    var southEastRowIndex = rowIndex + 1;
+    var southEastColumnIndex = columnIndex + 1;
+
+    if (this.isCheckCellInbounds(southEastRowIndex, southEastColumnIndex)) {
+      currentCells[southEastRowIndex][southEastColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+    }
+
+    // check south
+    var southRowIndex = rowIndex + 1;
+    var southColumnIndex = columnIndex;
+
+    if (this.isCheckCellInbounds(southRowIndex, southColumnIndex)) {
+      currentCells[southRowIndex][southColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+    }
+
+    // check south-west
+    var southWestRowIndex = rowIndex + 1;
+    var southWestColumnIndex = columnIndex - 1;
+
+    if (this.isCheckCellInbounds(southWestRowIndex, southWestColumnIndex)) {
+      currentCells[southWestRowIndex][southWestColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+    }
+
+    // check west
+    var westRowIndex = rowIndex;
+    var westColumnIndex = columnIndex - 1;
+
+    if (this.isCheckCellInbounds(westRowIndex, westColumnIndex)) {
+      currentCells[westRowIndex][westColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+    }
+
+    // check north-west
+    var northWestRowIndex = rowIndex - 1;
+    var northWestColumnIndex = columnIndex - 1;
+
+    if (this.isCheckCellInbounds(northWestRowIndex, northWestColumnIndex)) {
+      currentCells[northWestRowIndex][northWestColumnIndex] == 1 ? cellAndNeighborInfo.aliveNeighbors++ : cellAndNeighborInfo.deadNeighbors++
+    }
+
+        return this.checkGameRulesAgainst(cellAndNeighborInfo);
+  }
+
+  checkGameRulesAgainst(cellAndNeighborInfo) {
+    var cellState = cellAndNeighborInfo.currentCellState;
+    var numAliveNeighbors = cellAndNeighborInfo.aliveNeighbors;
+    var numDeadNeighbors = cellAndNeighborInfo.deadNeighbors;
+    var finalCellState = cellState;
+    // 1. Any live cell with fewer than two live neighbours dies, as if caused by under - population.
+      if (cellState == 1 && numAliveNeighbors < 2) finalCellState = 0;
+    // 2. Any live cell with two or three live neighbours lives on to the next generation.
+      if (cellState == 1 && numAliveNeighbors >= 2 && numAliveNeighbors <= 3) finalCellState = 1;
+    // 3. Any live cell with more than three live neighbours dies, as if by over - population.
+      if (cellState == 1 && numAliveNeighbors > 3) finalCellState = 0;
+    // 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+      if (cellState == 0 && numAliveNeighbors == 3) finalCellState = 1;
+      return finalCellState;
+  }
+
+  isCheckCellInbounds(rowIndex, columnIndex) {
+    return rowIndex >= 0 &&
+            rowIndex <= this.state.currentCells.length - 1 &&
+            columnIndex >= 0 &&
+            columnIndex <= this.state.currentCells[0].length - 1
+  }
+
+
+  setPreviousCellsToCurrentCells() {
+    this.setState({previousCells: this.state.currentCells});
   }
 
   render() {
@@ -65,7 +177,9 @@ class Gameboard extends Component {
             />
           </div>
         </div>
-        { currentCells.map(row => <GameRow row={row} />) }
+        <div className = "box">
+          { currentCells.map(row => <GameRow row={row} />) }
+        </div>
       </div>
     )
   }

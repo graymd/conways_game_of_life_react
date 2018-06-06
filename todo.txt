@@ -1,0 +1,5 @@
+Still todo:
+
+- fix unique "key" prop
+- add user input for size
+- allow users to select starting live cells
