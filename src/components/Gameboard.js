@@ -6,8 +6,8 @@ import Button from './Button';
 class Gameboard extends Component {
 
     state = {
-      boardHeight: 10,
-      boardWidth: 10,
+      boardHeight: 14,
+      boardWidth: 30,
       currentCells: [],
       previousCells: [],
       startGameButton: true,
@@ -39,11 +39,21 @@ class Gameboard extends Component {
 
   startGame() {
     this.setState({startGameButton: false});
+    var aliveCount = this.countAlive();
     this.interval = setInterval(() => {
-      if (!this.state.gameOver) {
+      if (!this.state.gameOver && aliveCount !== 0) {
         this.tickGame();
+        aliveCount = this.countAlive();
+      } else {
+        this.setState({gameOver: true})
       }
     }, 1000)
+  }
+
+  countAlive() {
+    var currentCells = this.state.currentCells;
+    var flattenedCurrentCells = currentCells.reduce((acc, val) => acc.concat(val), []);
+    return flattenedCurrentCells.reduce((acc, val) => acc + val, 0);
   }
 
   tickGame() {
